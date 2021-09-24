@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SistemaInventario.Data;
+using SistemaInventario.AccesoDatos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +30,9 @@ namespace SistemaInventario
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
-			services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+			services.AddDefaultIdentity<IdentityUser>(/*options => options.SignIn.RequireConfirmedAccount = true*/)
 				.AddEntityFrameworkStores<ApplicationDbContext>();
-			services.AddControllersWithViews();
+			services.AddControllersWithViews().AddRazorRuntimeCompilation();
 			services.AddRazorPages();
 		}
 
@@ -62,7 +62,7 @@ namespace SistemaInventario
 			{
 				endpoints.MapControllerRoute(
 					name: "default",
-					pattern: "{controller=Home}/{action=Index}/{id?}");
+					pattern: "{area=Inventario}/{controller=Home}/{action=Index}/{id?}");
 				endpoints.MapRazorPages();
 			});
 		}
