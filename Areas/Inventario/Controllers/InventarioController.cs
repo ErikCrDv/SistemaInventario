@@ -54,7 +54,8 @@ namespace SistemaInventario.Areas.Inventario.Controllers
 				InventarioVM.Inventario = _applicationDbContext.Inventarios.SingleOrDefault(i => i.Id == inventarioId);
 				InventarioVM.InventarioDetalles = _applicationDbContext.InventarioDetalles
 					.Include(p => p.Producto)
-					.Include(m => m.Producto.Marca).Where(d => d.InventarioId == inventarioId)
+					.Include(m => m.Producto.Marca)
+					.Where(d => d.InventarioId == inventarioId)
 					.ToList();
 			}
 
@@ -70,9 +71,9 @@ namespace SistemaInventario.Areas.Inventario.Controllers
 				InventarioVM.Inventario.Estado = false;
 				InventarioVM.Inventario.FechaInicial = DateTime.Now;
 
+				//Capturar el id del Usuario
 				var claimIdentidad = (ClaimsIdentity)User.Identity;
 				var claim = claimIdentidad.FindFirst(ClaimTypes.NameIdentifier);
-
 				InventarioVM.Inventario.UsuarioAplicacionId = claim.Value;
 
 				_applicationDbContext.Inventarios.Add(InventarioVM.Inventario);
@@ -84,6 +85,7 @@ namespace SistemaInventario.Areas.Inventario.Controllers
 
 			}
 
+			//Comprobar si hay registros en BodegaPoducto e InventarioDetalle del producto que se recibe en el controlador
 			var bodegaProducto = _applicationDbContext.BodegaProductos.Include(b => b.Producto)
 				.FirstOrDefault(b => b.ProductoId == producto && b.BodegaId == InventarioVM.Inventario.BodegaId);
 
